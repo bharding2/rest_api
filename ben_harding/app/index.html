@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>S L O T H B E A R  A P P</title>
   </head>
-  <body>
-    <main data-ng-app="slothbearApp">
+  <body data-ng-app="slothbearApp">
+    <main>
       <section data-ng-controller="BearsController as bearsctrl" data-ng-init="bearsctrl.getAll()">
         <form data-ng-submit="bearsctrl.createBear()">
           <label>Name
@@ -24,10 +24,10 @@
             <input type="text" name="gender" data-ng-model="bearsctrl.newBear.gender" placeholder="m">
           </label>
 
-          <button type="submit">Create Bear</button>
+          <button id="createbear" type="submit">Create Bear</button>
         </form>
 
-        <ul id="bearslint">
+        <ul id="bearslist">
           <li data-ng-repeat="bear in bearsctrl.bears">
             <span data-ng-if="!bear.editing">{{ bear.name }} (gender: {{ bear.gender }}) weighs {{ bear.weight }} lbs and has a strength of {{ bear.strength }}</span>
             <form data-ng-if="bear.editing" data-ng-submit="bearsctrl.updateBear(bear)">
