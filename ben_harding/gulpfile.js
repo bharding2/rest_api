@@ -13,14 +13,19 @@ var specFiles = ['./test/**/*spec.js'];
 var testFiles = ['./test/**/*test.js'];
 var appFiles = ['./app/**/*.js'];
 
-gulp.task('webpack:dev', () => {
+gulp.task('webpack:dev', ['html:dev', 'css:dev'], () => {
   return gulp.src('app/js/entry.js')
     .pipe(webpack({
       output: {
         filename: 'bundle.js'
       }
     }))
-    .pipe(gulp.dest('./build'));
+    .pipe(gulp.dest('./build'))
+    .on('end', () => {
+      buildServer.close(() => {
+        console.log('build server close');
+      });
+    });
 });
 
 gulp.task('html:dev', () => {
@@ -44,12 +49,7 @@ gulp.task('test:protractor', ['build:dev'], () => {
       'configFile': './test/integration/config.js',
       'debug': true,
       'autoStartStopServer': true
-    }))
-    .on('end', () => {
-      buildServer.close(() => {
-        console.log('build server close');
-      });
-    });
+    }));
 });
 
 gulp.task('lint:api', () => {
@@ -76,7 +76,7 @@ gulp.task('lint:spec', () => {
   .pipe(eslint.format());
 });
 
-gulp.task('build:dev', ['webpack:dev', 'html:dev', 'css:dev']);
+gulp.task('build:dev', ['webpack:dev']);
 gulp.task('test', ['test:mocha', 'test:protractor']);
 gulp.task('lint', ['lint:api', 'lint:test', 'lint:app', 'lint:spec']);
 

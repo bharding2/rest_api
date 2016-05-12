@@ -21,7 +21,7 @@
           </label>
 
           <label>Gender
-            <input type="text" name="gender" data-ng-model="bearsctrl.newBear.gender">
+            <input type="text" name="gender" data-ng-model="bearsctrl.newBear.gender" placeholder="m">
           </label>
 
           <button type="submit">Create Bear</button>
@@ -29,7 +29,29 @@
 
         <ul id="bearslint">
           <li data-ng-repeat="bear in bearsctrl.bears">
-            <span data-ng-if="!bear.editing">{{ bear.name }} (gender: {{ bear.gender }}) weighs {{ bear.weight }} lbs and has a strength of {{ bear.strength }}
+            <span data-ng-if="!bear.editing">{{ bear.name }} (gender: {{ bear.gender }}) weighs {{ bear.weight }} lbs and has a strength of {{ bear.strength }}</span>
+            <form data-ng-if="bear.editing" data-ng-submit="bearsctrl.updateBear(bear)">
+              <label>Name
+                <input type="text" name="name" data-ng-model="bear.name">
+              </label>
+
+              <label>Weight
+                <input type="text" name="weight" data-ng-model="bear.weight" placeholder="500">
+              </label>
+
+              <label>Strength
+                <input type="text" name="strength" data-ng-model="bear.strength" placeholder="10">
+              </label>
+
+              <label>Gender
+                <input type="text" name="gender" data-ng-model="bear.gender" placeholder="m">
+              </label>
+
+              <button type="submit">Update Bear</button>
+              <button data-ng-click="bear.editing = false">Cancel</button>
+            </form>
+            <button data-ng-if="!bear.editing" data-ng-click="bear.editing = true">Edit</button>
+            <button data-ng-click="bearsctrl.removeBear(bear)">Delete Bear</button>
           </li>
         </ul>
       </section>
