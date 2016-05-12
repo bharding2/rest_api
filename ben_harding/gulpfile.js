@@ -2,8 +2,10 @@ const gulp = require('gulp');
 const webpack = require('webpack-stream');
 const eslint = require('gulp-eslint');
 const mocha = require('gulp-mocha');
-const exec = require('child_process').exec;
+// const exec = require('child_process').exec;
 const angularProtractor = require('gulp-angular-protractor');
+
+const buildServer = require(__dirname + '/build_server');
 
 var apiFiles = ['./*.js', './lib/*.js', './models/*.js', './routes/*.js'];
 var specFiles = ['./test/**/*spec.js'];
@@ -30,22 +32,21 @@ gulp.task('css:dev', () => {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('test:env', () => {
-  exec('node server.js');
-});
-
 gulp.task('test:mocha', () => {
   return gulp.src('./test/**/*test.js')
     .pipe(mocha());
 });
 
-gulp.task('test:protractor', ['build:dev', 'test:env'], () => {
+gulp.task('test:protractor', ['build:dev'], () => {
   return gulp.src(['./test/integration/*spec.js'])
     .pipe(angularProtractor({
       'configFile': './test/integration/config.js',
       'debug': true,
       'autoStartStopServer': true
-    }));
+    }))
+    .on('end', () => {
+      buildServer.close();
+    });
 });
 
 gulp.task('lint:api', () => {
