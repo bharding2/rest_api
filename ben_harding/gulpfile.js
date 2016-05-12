@@ -45,7 +45,9 @@ gulp.task('test:protractor', ['build:dev'], () => {
       'autoStartStopServer': true
     }))
     .on('end', () => {
-      buildServer.close();
+      buildServer.close(() => {
+        console.log('build server close');
+      });
     });
 });
 

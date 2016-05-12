@@ -32,7 +32,7 @@ slothbearApp.controller('BearsController', ['$http', function($http) {
       }, handleErr.bind(this));
   };
 
-  this.removeear = (bear) => {
+  this.removeBear = (bear) => {
     $http.delete(baseUrl + '/api/bears/' + bear._id)
       .then(() => {
         this.bears.splice(this.bears.indexOf(bear), 1);
