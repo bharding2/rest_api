@@ -1,31 +1,79 @@
 const gulp = require('gulp');
+const webpack = require('webpack-stream');
 const eslint = require('gulp-eslint');
 const mocha = require('gulp-mocha');
+const exec = require('child_process').exec;
+const angularProtractor = require('gulp-angular-protractor');
 
-var files = ['*.js', './lib/*.js', './models/*.js', './routes/*.js'];
+var apiFiles = ['./*.js', './lib/*.js', './models/*.js', './routes/*.js'];
+var specFiles = ['./test/**/*spec.js'];
+var testFiles = ['./test/**/*test.js'];
+var appFiles = ['./app/**/*.js'];
+
+gulp.task('webpack:dev', () => {
+  return gulp.src('app/js/entry.js')
+    .pipe(webpack({
+      output: {
+        filename: 'bundle.js'
+      }
+    }))
+    .pipe(gulp.dest('./build'));
+});
+
+gulp.task('html:dev', () => {
+  return gulp.src('app/**/*.html')
+    .pipe(gulp.dest('./build'));
+});
+
+gulp.task('css:dev', () => {
+  return gulp.src('app/**/*.css')
+    .pipe(gulp.dest('./build'));
+});
+
+gulp.task('test:env', () => {
+  exec('node server.js');
+});
 
 gulp.task('test:mocha', () => {
   return gulp.src('./test/**/*test.js')
     .pipe(mocha());
 });
 
+gulp.task('test:protractor', ['build:dev', 'test:env'], () => {
+  return gulp.src(['./test/integration/*spec.js'])
+    .pipe(angularProtractor({
+      'configFile': './test/integration/config.js',
+      'debug': true,
+      'autoStartStopServer': true
+    }));
+});
+
+gulp.task('lint:api', () => {
+  return gulp.src(apiFiles)
+    .pipe(eslint('./.eslintrc.json'))
+    .pipe(eslint.format());
+});
+
 gulp.task('lint:test', () => {
-  return gulp.src('./test/**/*test.js')
-    .pipe(eslint())
+  return gulp.src(testFiles)
+    .pipe(eslint('./.eslintrc.json'))
     .pipe(eslint.format());
 });
 
 gulp.task('lint:app', () => {
-  return gulp.src(files)
-    .pipe(eslint())
+  return gulp.src(appFiles)
+    .pipe(eslint('./app/.eslintrc.json'))
     .pipe(eslint.format());
 });
 
-gulp.task('test', ['test:mocha']);
-gulp.task('lint', ['lint:test', 'lint:app']);
-gulp.task('watch', () => {
-  gulp.watch(files, ['test', 'lint']);
-  gulp.watch('./test/**/*test.js', ['test', 'lint:test']);
+gulp.task('lint:spec', () => {
+  return gulp.src(specFiles)
+  .pipe(eslint('./test/integration/.eslintrc.json'))
+  .pipe(eslint.format());
 });
 
-gulp.task('default', ['watch', 'lint', 'test']);
+gulp.task('build:dev', ['webpack:dev', 'html:dev', 'css:dev']);
+gulp.task('test', ['test:mocha', 'test:protractor']);
+gulp.task('lint', ['lint:api', 'lint:test', 'lint:app', 'lint:spec']);
+
+gulp.task('default', ['lint', 'test']);
