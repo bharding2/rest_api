@@ -10,6 +10,14 @@ const mateRouter = require(__dirname + '/routes/mate_router');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/slothbearDB');
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Headers', 'DELETE, PUT');
+
+  next();
+});
+
 app.use('/api', bearsRouter);
 app.use('/api', slothsRouter);
 app.use('/api', slothbearsRouter);
