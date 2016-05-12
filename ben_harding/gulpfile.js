@@ -5,6 +5,7 @@ const mocha = require('gulp-mocha');
 // const exec = require('child_process').exec;
 const angularProtractor = require('gulp-angular-protractor');
 
+process.env.BUILD_PORT = 5025;
 const buildServer = require(__dirname + '/build_server');
 
 var apiFiles = ['./*.js', './lib/*.js', './models/*.js', './routes/*.js'];
