@@ -47,11 +47,11 @@
                 <input type="text" name="gender" data-ng-model="bear.gender" placeholder="m">
               </label>
 
-              <button type="submit">Update Bear</button>
-              <button data-ng-click="bear.editing = false">Cancel</button>
+              <button type="submit" data-ng-click="bearsctrl.deleteBackup(bear)">Update Bear</button>
+              <button data-ng-click="bearsctrl.restoreBackup(bear); bear.editing = false">Cancel</button>
             </form>
-            <!-- TODO: find a way to stash this bear on edit, revert on cancel -->
-            <button data-ng-if="!bear.editing" data-ng-click="bear.editing = true">Edit</button>
+
+            <button data-ng-if="!bear.editing" data-ng-click="bearsctrl.backup(bear); bear.editing = true">Edit</button>
             <button data-ng-click="bearsctrl.removeBear(bear)">Delete Bear</button>
           </li>
         </ul>
@@ -98,11 +98,11 @@
                 <input type="text" name="gender" data-ng-model="sloth.gender" placeholder="m">
               </label>
 
-              <button type="submit">Update Sloth</button>
-              <button data-ng-click="sloth.editing = false">Cancel</button>
+              <button type="submit" data-ng-click="slothsctrl.deleteBackup(sloth)">Update Sloth</button>
+              <button data-ng-click="slothsctrl.restoreBackup(sloth); sloth.editing = false">Cancel</button>
             </form>
-            <!-- TODO: find a way to stash this sloth on edit, revert on cancel -->
-            <button data-ng-if="!sloth.editing" data-ng-click="sloth.editing = true">Edit</button>
+
+            <button data-ng-if="!sloth.editing" data-ng-click="slothsctrl.backup(sloth); sloth.editing = true">Edit</button>
             <button data-ng-click="slothsctrl.removeSloth(sloth)">Delete Sloth</button>
           </li>
         </ul>

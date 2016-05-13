@@ -10,6 +10,18 @@ var handleErr = function(err) {
 slothbearApp.controller('BearsController', ['$http', function($http) {
   this.bears = [];
 
+  this.backup = (bear) => {
+    bear.backup = angular.copy(bear);
+  };
+
+  this.restoreBackup = (bear) => {
+    angular.copy(bear.backup, bear);
+  };
+
+  this.deleteBackup = (bear) => {
+    delete bear.backup;
+  };
+
   this.getAll = () => {
     $http.get(baseUrl + '/api/bears')
       .then((response) => {
@@ -42,6 +54,18 @@ slothbearApp.controller('BearsController', ['$http', function($http) {
 
 slothbearApp.controller('SlothsController', ['$http', function($http) {
   this.sloths = [];
+
+  this.backup = (sloth) => {
+    sloth.backup = angular.copy(sloth);
+  };
+
+  this.restoreBackup = (sloth) => {
+    angular.copy(sloth.backup, sloth);
+  };
+
+  this.deleteBackup = (sloth) => {
+    delete sloth.backup;
+  };
 
   this.getAll = () => {
     $http.get(baseUrl + '/api/sloths')
