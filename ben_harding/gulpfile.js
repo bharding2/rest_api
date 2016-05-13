@@ -7,7 +7,8 @@ const angularProtractor = require('gulp-angular-protractor');
 
 var apiFiles = ['./*.js', './lib/*.js', './models/*.js', './routes/*.js'];
 var specFiles = ['./test/**/*spec.js'];
-var testFiles = ['./test/**/*test.js'];
+var testFiles = ['./test/*test.js'];
+var unitFiles = ['./test/unit/**/*test.js'];
 var appFiles = ['./app/**/*.js'];
 
 var children = [];
@@ -54,7 +55,7 @@ gulp.task('css:dev', () => {
 });
 
 gulp.task('test:mocha', () => {
-  return gulp.src('./test/**/*test.js')
+  return gulp.src('./test/*test.js')
     .pipe(mocha());
 });
 
@@ -96,8 +97,14 @@ gulp.task('lint:spec', () => {
   .pipe(eslint.format());
 });
 
+gulp.task('lint:unit', () => {
+  return gulp.src(unitFiles)
+  .pipe(eslint('./test/unit/.eslintrc.json'))
+  .pipe(eslint.format());
+});
+
 gulp.task('build:dev', ['webpack:dev']);
 gulp.task('test', ['test:mocha', 'test:protractor']);
-gulp.task('lint', ['lint:api', 'lint:test', 'lint:app', 'lint:spec']);
+gulp.task('lint', ['lint:api', 'lint:test', 'lint:app', 'lint:spec', 'lint:unit']);
 
 gulp.task('default', ['lint', 'test']);

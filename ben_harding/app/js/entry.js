@@ -39,3 +39,36 @@ slothbearApp.controller('BearsController', ['$http', function($http) {
       }, handleErr.bind(this));
   };
 }]);
+
+slothbearApp.controller('SlothsController', ['$http', function($http) {
+  this.sloths = [];
+
+  this.getAll = () => {
+    $http.get(baseUrl + '/api/sloths')
+      .then((response) => {
+        this.sloths = response.data;
+      }, handleErr.bind(this));
+  };
+
+  this.createSloth = () => {
+    $http.post(baseUrl + '/api/sloths', this.newSloth)
+      .then((response) => {
+        this.sloths.push(response.data);
+        this.newSloth = null;
+      }, handleErr.bind(this));
+  };
+
+  this.updateSloth = (sloth) => {
+    $http.put(baseUrl + '/api/sloths/' + sloth._id, sloth)
+      .then(() => {
+        sloth.editing = false;
+      }, handleErr.bind(this));
+  };
+
+  this.removeSloth = (sloth) => {
+    $http.delete(baseUrl + '/api/sloths/' + sloth._id)
+      .then(() => {
+        this.sloths.splice(this.sloths.indexOf(sloth), 1);
+      }, handleErr.bind(this));
+  };
+}]);
