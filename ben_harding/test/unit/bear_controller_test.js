@@ -50,10 +50,11 @@ describe('bears controller', function() {
     });
 
     it('should update a bear', function() {
-      $httpBackend.expectPUT('http://localhost:5555/api/bears/1', { name: 'change', editing: true, _id: 1 })
+      $httpBackend.expectPUT('http://localhost:5555/api/bears/1',
+        { name: 'change bear', editing: true, _id: 1 })
         .respond(200);
       bearsctrl.bears = [{ name: 'test bear', editing: true, _id: 1 }];
-      bearsctrl.bears[0].name = 'change';
+      bearsctrl.bears[0].name = 'change bear';
       bearsctrl.updateBear(bearsctrl.bears[0]);
       $httpBackend.flush();
       expect(bearsctrl.bears[0].editing).toBe(false);
