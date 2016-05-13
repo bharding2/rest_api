@@ -1,3 +1,5 @@
+// TODO: rest of e2e
+
 describe('bears', function() {
   it('should create a bear', function() {
     browser.get('http://localhost:5525');

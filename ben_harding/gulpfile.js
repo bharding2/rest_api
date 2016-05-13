@@ -33,6 +33,7 @@ gulp.task('webpack:dev', ['html:dev', 'css:dev'], () => {
     .pipe(gulp.dest('./build'));
 });
 
+// TODO: bring unit tests into gulpfile
 gulp.task('webpack:test', () => {
   return gulp.src('test/unit/test_entry.js')
     .pipe(webpack({
