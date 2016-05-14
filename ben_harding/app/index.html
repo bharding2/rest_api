@@ -107,6 +107,39 @@
           </li>
         </ul>
       </section>
+
+      <section data-ng-controller="SlothbearsController as slothbearsctrl" data-ng-init="slothbearsctrl.getAll()">
+        <button data-ng-click="slothbearsctrl.createSlothbear()">Make a Slothbear</button>
+
+        <ul id="slothbearslist">
+          <li data-ng-repeat="slothbear in slothbearsctrl.slothbears">
+            <span data-ng-if="!slothbear.editing">{{ slothbear.name }} (gender: {{ slothbear.gender }}) weighs {{ slothbear.weight }} lbs and has a strength of {{ slothbear.strength }}</span>
+            <form data-ng-if="slothbear.editing" data-ng-submit="slothbearsctrl.updateSlothbear(slothbear)">
+              <label>Name
+                <input type="text" name="name" data-ng-model="slothbear.name">
+              </label>
+
+              <label>Weight
+                <input type="text" name="weight" data-ng-model="slothbear.weight" placeholder="500">
+              </label>
+
+              <label>Strength
+                <input type="text" name="strength" data-ng-model="slothbear.strength" placeholder="10">
+              </label>
+
+              <label>Gender
+                <input type="text" name="gender" data-ng-model="slothbear.gender" placeholder="m">
+              </label>
+
+              <button type="submit" data-ng-click="slothbearsctrl.deleteBackup(slothbear)">Update Slothbear</button>
+              <button data-ng-click="slothbearsctrl.restoreBackup(slothbear); slothbear.editing = false">Cancel</button>
+            </form>
+
+            <button data-ng-if="!slothbear.editing" data-ng-click="slothbearsctrl.backup(slothbear); slothbear.editing = true">Edit</button>
+            <button data-ng-click="slothbearsctrl.removeSlothbear(slothbear)">Delete Slothbear</button>
+          </li>
+        </ul>
+      </section>
     </main>
     <script src="./bundle.js"></script>
   </body>
