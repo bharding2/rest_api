@@ -1,6 +1,7 @@
 const angular = require('angular');
 const slothbearApp = angular.module('slothbearApp', []);
-const baseUrl = 'http://localhost:5555';
+const port = process.env.PORT || 5555;
+const baseUrl = 'http://localhost:' + port;
 
 var handleErr = function(err) {
   console.log(err);

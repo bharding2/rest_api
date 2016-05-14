@@ -15,6 +15,7 @@ var children = [];
 
 gulp.task('startservers:test', () => {
   process.env.BUILD_PORT = 5525;
+  process.env.PORT = 5050;
   children.push(childProcess.fork('build_server.js'));
   children.push(childProcess.spawn('mongod', ['--dbpath=./db']));
   children.push(childProcess.fork('server.js', [], { env:
@@ -67,6 +68,11 @@ gulp.task('test:protractor', ['startservers:test', 'build:dev'], () => {
       'debug': true,
       'autoStartStopServer': true
     }))
+    .on('error', () => {
+      children.forEach((child) => {
+        child.kill('SIGTERM');
+      });
+    })
     .on('end', () => {
       children.forEach((child) => {
         child.kill('SIGTERM');
