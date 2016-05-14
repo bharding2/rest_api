@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5555;
 const bearsRouter = require(__dirname + '/routes/bears_router');
 const slothsRouter = require(__dirname + '/routes/sloths_router');
 const slothbearsRouter = require(__dirname + '/routes/slothbears_router');

@@ -15,11 +15,11 @@ var children = [];
 
 gulp.task('startservers:test', () => {
   process.env.BUILD_PORT = 5525;
-  process.env.PORT = 5050;
+  const mongoURI = 'mongodb://localhost/slothbearTestDB';
   children.push(childProcess.fork('build_server.js'));
   children.push(childProcess.spawn('mongod', ['--dbpath=./db']));
   children.push(childProcess.fork('server.js', [], { env:
-    { MONGODB_URI: 'mongodb://localhost/slothbearTestDB' }
+    { MONGODB_URI: mongoURI }
   }));
 });
 
