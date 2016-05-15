@@ -86,6 +86,8 @@ gulp.task('test:protractor', ['startservers:test', 'build:dev'], () => {
       children.forEach((child) => {
         child.kill('SIGTERM');
       });
+      process.env.PORT = 5555;
+      gulp.start('build:dev');
     })
     .on('end', () => {
       children.forEach((child) => {
