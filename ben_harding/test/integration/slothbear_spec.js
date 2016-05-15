@@ -52,18 +52,18 @@ describe('slothbears', function() {
     });
   });
 
-  // it('should delete a slothbear', function() {
-  //   browser.get('http://localhost:5525');
-  //   var beginLength = 0;
-  //   var endLength = 0;
-  //   element.all(by.css('#slothbearslist li')).count().then(function(count) {
-  //     beginLength = count;
-  //   });
-  //   element(by.css('#slothbearslist li:last-child'))
-  //     .element(by.buttonText('Delete Slothbear')).click();
-  //   element.all(by.css('#slothbearslist li')).count().then(function(count) {
-  //     endLength = count;
-  //   });
-  //   expect(endLength).not.toEqual(beginLength - 1);
-  // });
+  it('should delete a slothbear', function() {
+    browser.get('http://localhost:5525');
+    var beginLength = 0;
+    var endLength = 0;
+    element.all(by.css('#slothbearslist li')).count().then(function(count) {
+      beginLength = count;
+    });
+    element(by.css('#slothbearslist li:last-child'))
+      .element(by.buttonText('Delete Slothbear')).click();
+    element.all(by.css('#slothbearslist li')).count().then(function(count) {
+      endLength = count;
+    });
+    expect(endLength).not.toEqual(beginLength - 1);
+  });
 });
