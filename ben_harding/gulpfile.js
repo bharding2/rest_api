@@ -1,9 +1,11 @@
 const gulp = require('gulp');
 const webpack = require('webpack-stream');
+const webp = require('webpack');
 const eslint = require('gulp-eslint');
 const mocha = require('gulp-mocha');
 const childProcess = require('child_process');
 const angularProtractor = require('gulp-angular-protractor');
+const KarmaServer = require('karma').Server;
 
 var apiFiles = ['./*.js', './lib/*.js', './models/*.js', './routes/*.js'];
 var specFiles = ['./test/**/*spec.js'];
@@ -15,11 +17,12 @@ var children = [];
 
 gulp.task('startservers:test', () => {
   process.env.BUILD_PORT = 5525;
+  process.env.PORT = 5505;
   const mongoURI = 'mongodb://localhost/slothbearTestDB';
   children.push(childProcess.fork('build_server.js'));
   children.push(childProcess.spawn('mongod', ['--dbpath=./db']));
   children.push(childProcess.fork('server.js', [], { env:
-    { MONGODB_URI: mongoURI }
+    { MONGODB_URI: mongoURI, PORT: 5505 }
   }));
 });
 
@@ -29,12 +32,16 @@ gulp.task('webpack:dev', ['html:dev', 'css:dev'], () => {
       output: {
         devtool: 'source-map',
         filename: 'bundle.js'
-      }
+      },
+      plugins: [
+        new webp.EnvironmentPlugin([
+          'PORT'
+        ])
+      ]
     }))
     .pipe(gulp.dest('./build'));
 });
 
-// TODO: bring unit tests into gulpfile
 gulp.task('webpack:test', () => {
   return gulp.src('test/unit/test_entry.js')
     .pipe(webpack({
@@ -61,6 +68,13 @@ gulp.task('test:mocha', () => {
     .pipe(mocha());
 });
 
+gulp.task('test:karma', ['webpack:test'], (done) => {
+  new KarmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
+
 gulp.task('test:protractor', ['startservers:test', 'build:dev'], () => {
   return gulp.src(['./test/integration/**/*spec.js'])
     .pipe(angularProtractor({
@@ -77,6 +91,8 @@ gulp.task('test:protractor', ['startservers:test', 'build:dev'], () => {
       children.forEach((child) => {
         child.kill('SIGTERM');
       });
+      process.env.PORT = 5555;
+      gulp.start('build:dev');
     });
 });
 
@@ -111,7 +127,7 @@ gulp.task('lint:unit', () => {
 });
 
 gulp.task('build:dev', ['webpack:dev']);
-gulp.task('test', ['test:mocha', 'test:protractor']);
+gulp.task('test', ['test:mocha', 'test:karma', 'test:protractor']);
 gulp.task('lint', ['lint:api', 'lint:test', 'lint:app', 'lint:spec', 'lint:unit']);
 
 gulp.task('default', ['lint', 'test']);
