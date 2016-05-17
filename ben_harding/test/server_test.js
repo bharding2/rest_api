@@ -1,31 +1,27 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const mongoose = require('mongoose');
 chai.use(chaiHttp);
 const expect = chai.expect;
 const request = chai.request;
-
-var port = process.env.PORT = 5050;
-process.env.MONGODB_URI = 'mongodb://localhost/slothbearTestDB';
-var server = require(__dirname + '/../server');
+const port = process.env.PORT = 5050;
+const setup = require(__dirname + '/test_setup');
+const teardown = require(__dirname + '/test_teardown');
 
 var Sloth = require(__dirname + '/../models/sloth');
 var Bear = require(__dirname + '/../models/bear');
 var Slothbear = require(__dirname + '/../models/slothbear');
 
 describe('sloths plus bears server', () => {
-  after(() => {
-    server.close();
+  before((done) => {
+    setup(done);
+  });
+
+  after((done) => {
+    teardown(done);
   });
 
   describe('Sloth methods', () => {
     describe('POST method', () => {
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
-          done();
-        });
-      });
-
       it('should POST a new sloth', (done) => {
         request('localhost:' + port)
           .post('/api/sloths')
@@ -46,7 +42,6 @@ describe('sloths plus bears server', () => {
           .end((err, res) => {
             expect(err).to.eql(null);
             expect(Array.isArray(res.body)).to.eql(true);
-            expect(res.body.length).to.eql(0);
             done();
           });
       });
@@ -54,10 +49,11 @@ describe('sloths plus bears server', () => {
 
     describe('routes that need a sloth', () => {
       beforeEach((done) => {
-        var newSloth = new Sloth({ name: 'Rick', gender: 'm', weight: 150, strength: 8000 });
+        var newSloth = new Sloth({ name: 'Other Rick', gender: 'm', weight: 150, strength: 8000 });
 
         newSloth.save((err, data) => {
           if (err) return console.log('error');
+          console.log('saving sloth');
           this.sloth = data;
           done();
         });
@@ -70,18 +66,12 @@ describe('sloths plus bears server', () => {
         });
       });
 
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
-          done();
-        });
-      });
-
       it('should get a sloth', (done) => {
         request('localhost:' + port)
           .get('/api/sloths/' + this.sloth._id)
           .end((err, res) => {
             expect(err).to.eql(null);
-            expect(res.body.name).to.eql('Rick');
+            expect(res.body.name).to.eql('Other Rick');
             expect(res.body.strength).to.eql(8000);
             done();
           });
@@ -112,12 +102,6 @@ describe('sloths plus bears server', () => {
 
   describe('Bear methods', () => {
     describe('POST method', () => {
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
-          done();
-        });
-      });
-
       it('should POST a new bear', (done) => {
         request('localhost:' + port)
           .post('/api/bears')
@@ -138,7 +122,6 @@ describe('sloths plus bears server', () => {
           .end((err, res) => {
             expect(err).to.eql(null);
             expect(Array.isArray(res.body)).to.eql(true);
-            expect(res.body.length).to.eql(0);
             done();
           });
       });
@@ -146,7 +129,7 @@ describe('sloths plus bears server', () => {
 
     describe('routes that need a bear', () => {
       beforeEach((done) => {
-        var newBear = new Bear({ name: 'Rick', gender: 'm', weight: 150, strength: 8000 });
+        var newBear = new Bear({ name: 'Other Rick', gender: 'm', weight: 150, strength: 8000 });
 
         newBear.save((err, data) => {
           if (err) return console.log('error');
@@ -162,18 +145,12 @@ describe('sloths plus bears server', () => {
         });
       });
 
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
-          done();
-        });
-      });
-
       it('should get a bear', (done) => {
         request('localhost:' + port)
           .get('/api/bears/' + this.bear._id)
           .end((err, res) => {
             expect(err).to.eql(null);
-            expect(res.body.name).to.eql('Rick');
+            expect(res.body.name).to.eql('Other Rick');
             expect(res.body.strength).to.eql(8000);
             done();
           });
@@ -205,20 +182,14 @@ describe('sloths plus bears server', () => {
   describe('Slothbear methods', () => {
     describe('Mating method', () => {
       before((done) => {
-        var newSloth = new Sloth({ name: 'Rick', gender: 'm', weight: 150, strength: 8000 });
+        var newSloth = new Sloth({ name: 'Mating Rick', gender: 'm', weight: 150, strength: 8000 });
         newSloth.save((err) => {
           if (err) return console.log('error');
-          var newBear = new Bear({ name: 'Rick', gender: 'm', weight: 150, strength: 8000 });
+          var newBear = new Bear({ name: 'Mating Rick', gender: 'm', weight: 150, strength: 8000 });
           newBear.save((err) => {
             if (err) return console.log('error');
             done();
           });
-        });
-      });
-
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
-          done();
         });
       });
 
@@ -243,7 +214,6 @@ describe('sloths plus bears server', () => {
           .end((err, res) => {
             expect(err).to.eql(null);
             expect(Array.isArray(res.body)).to.eql(true);
-            expect(res.body.length).to.eql(0);
             done();
           });
       });
@@ -263,12 +233,6 @@ describe('sloths plus bears server', () => {
       afterEach((done) => {
         this.slothbear.remove((err) => {
           if (err) return console.log('error');
-          done();
-        });
-      });
-
-      after((done) => {
-        mongoose.connection.db.dropDatabase(() => {
           done();
         });
       });

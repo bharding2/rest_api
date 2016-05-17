@@ -34,6 +34,9 @@ mateRouter.get('/mate', (req, res) => {
 
   async.series([findSloth, findBear], (err) => {
     if (err) return handleErr(err, res);
+    if (!randomSloth || !randomBear) {
+      return res.status(412).json({ msg: 'You need a sloth and a bear to mate' });
+    }
 
     var newSlothbearName = randomSloth.name.slice(0, parseInt(randomSloth.name.length / 2, 10)) +
       randomBear.name.slice(parseInt(randomBear.name.length / 2, 10));

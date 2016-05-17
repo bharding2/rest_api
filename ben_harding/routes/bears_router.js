@@ -37,7 +37,7 @@ bearsRouter.put('/bears/:id', bodyParser, (req, res) => {
 });
 
 bearsRouter.delete('/bears/:id', (req, res) => {
-  Bear.findOneAndRemove({ _id: req.params.name }, (err) => {
+  Bear.findOneAndRemove({ _id: req.params.id }, (err) => {
     if (err) return handleErr(err, res);
     res.status(200).json({ msg: 'bear deleted' });
   });
